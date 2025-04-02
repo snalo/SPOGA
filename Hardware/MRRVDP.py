@@ -59,34 +59,9 @@ class MRRVDP(VDP):
     def set_vdp_latency(self) -> float:
         self.vdp_element_list.sort(
             key=lambda vdp_element: vdp_element.element_size, reverse=True)
-        if self.vdp_type == 'AMM':
-            # distance = self.vdp_element_list[0].element_size * \
-            #     (2*np.pi*self.ring_radius+self.pitch)
-            # self.prop_latency = distance/(3e8)
-            # self.latency = self.prop_latency + self.eo_tuning_latency + \
-            #     self.tia_latency+self.pd_latency+self.pheripheral_latency
-            self.latency = (1/self.br)
-            # print("Analog Latency ---->",self.latency )
-            # print("EO Tuning Latency---->",self.eo_tuning_latency)
-            # print("TIA  Latency---->",self.tia_latency)
-            # print("PD  Latency---->",self.pd_latency)
-            # print("Pheripheral Latency---->",self.pheripheral_latency)
-            return self.latency
-        elif self.vdp_type == 'MAM':
-            distance = self.vdp_element_list[0].element_size * \
-                (2*np.pi*self.ring_radius+self.pitch)
-            self.prop_latency = distance/(3e8)
-            self.latency = self.prop_latency + self.eo_tuning_latency + \
-                self.tia_latency+self.pd_latency+self.pheripheral_latency
-            # print("Analog Latency ---->",self.latency )
-            # print("EO Tuning Latency---->",self.eo_tuning_latency)
-            # print("TIA  Latency---->",self.tia_latency)
-            # print("PD  Latency---->",self.pd_latency)
-            # print("Pheripheral Latency---->",self.pheripheral_latency)
-            return self.latency
-        else:
-            raise VDPException(
-                'The latency calculation for specified type is not supported')
+        self.latency = (1 / self.br)
+
+        return self.latency
 
     def add_vdp_element(self, vdp_element):
         if not isinstance(vdp_element, VDPElement):
@@ -122,13 +97,20 @@ class MRRVDP(VDP):
         if element_convo_count > 1:
             no_of_used_comb_switches = self.get_element_count()*int(element_size/kernel_size)*2
             # print('No of utilized comb switches',no_of_used_comb_switches)
-        if self.vdp_type == "AMM":
+        if self.vdp_type == "DEAPCNN":
             total_vdp_mrr = self.get_element_count()*(element_size*2)+no_of_comb_switches
             utilized_rings = element_convo_count * \
                 (kernel_size*2)*self.get_element_count()+no_of_used_comb_switches
             idle_rings = total_vdp_mrr - utilized_rings
         # * Need to evaluate the utilization for the  MAM more accurately
-        if self.vdp_type == "MAM":
+        if self.vdp_type == "HOLYLIGHT":
+            total_vdp_mrr = (
+                (self.get_element_count()*element_size)+no_of_comb_switches)+element_size
+            utilized_rings = element_convo_count*kernel_size*self.get_element_count() + \
+                element_size
+            idle_rings = total_vdp_mrr-utilized_rings
+        # TODO Need to evaluate the utilization for the  MMA (SPOGA) more accurately
+        if self.vdp_type == "SPOGA":
             total_vdp_mrr = (
                 (self.get_element_count()*element_size)+no_of_comb_switches)+element_size
             utilized_rings = element_convo_count*kernel_size*self.get_element_count() + \

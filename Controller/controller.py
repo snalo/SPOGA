@@ -193,18 +193,11 @@ class Controller:
                         # print("Idle Rings :",self.idle_rings)
                         convolutions = convolutions-vdp_convo_count
                         # * Sceduling of partial sum request and updating convolution latency 
-                        if accelerator.acc_type != 'ONNA':
+                        if accelerator.acc_type != 'SPOGA':
                             partial_sum_latency = accelerator.pheripherals[ADDER].get_request_latency(decomposed_kernel_count)
                         else: 
-                            required_precision = 20
-                            # print('Decomposed Kernel ', decomposed_kernel_count)
-                            # print('Batch of VDPs accumulated ', math.floor(decomposed_kernel_count/(PCA_DKV_LIMIT*(2**required_precision))) )
-                            if (math.floor(decomposed_kernel_count/PCA_DKV_LIMIT))>1:
-                                partial_sum_latency = accelerator.pheripherals[ADDER].get_request_latency(math.floor(decomposed_kernel_count/PCA_DKV_LIMIT))
-                                # print('Partial Sum Latency',partial_sum_latency)
-                            else:
-                                partial_sum_latency = 0 
-                                # print('Partial Sum Latency',partial_sum_latency)
+                            partial_sum_latency = 0 
+                            # print('Partial Sum Latency',partial_sum_latency)
                         vdp.end_time = vdp.end_time + partial_sum_latency
                     if convolutions <= 0:
                         completed_layer=True

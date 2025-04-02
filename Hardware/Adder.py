@@ -13,8 +13,8 @@ class Adder(Pheripheral):
     
     def __init__(self):
         self.no_of_parallel_requests = 128
-        self.power = 0.05*1e-3
-        self.energy = 1.79e-9
+        self.power = 352*1e-3
+        self.energy = 2.86*1e-5
         self.latency = 3.125*1e-9
         self.area = None
         self.request_queue = self.no_of_parallel_requests

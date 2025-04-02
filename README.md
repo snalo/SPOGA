@@ -1,12 +1,28 @@
 
+## SPOGA - Scaling Analog Photonic Accelerators for Byte-Size, Integer General Matrix Multiply (GEMM) Kernels
 
-# B_ONN_SIM (BINARY Optical Neural Network Simulator)
+### Publication ArXiv Preprint
+https://arxiv.org/abs/2407.06134
 
-This is a transaction-level, event-driven python-based simulator for evaluation of Binary optical neural network accelerators for various Binary Neural Network models. 
+Publication can be cited: 
 
-### ArXiv Preprint
-https://arxiv.org/abs/2302.06405
+```bash
+@inproceedings{Alo_2024,
+   title={Scaling Analog Photonic Accelerators for Byte-Size, Integer General Matrix Multiply (GEMM) Kernels},
+   url={http://dx.doi.org/10.1109/ISVLSI61997.2024.00080},
+   DOI={10.1109/isvlsi61997.2024.00080},
+   booktitle={2024 IEEE Computer Society Annual Symposium on VLSI (ISVLSI)},
+   publisher={IEEE},
+   author={Alo, Oluwaseun Adewunmi and Vatsavai, Sairam Sri and Thakkar, Ishan},
+   year={2024},
+   month=jul, pages={409–414} 
+   }
+```
 
+
+The SPOGA accelerator used the B_ONN_SIM (BINARY Optical Neural Network Simulator) which is a transaction-level, event-driven python-based simulator for evaluation of Binary optical neural network accelerators for various Binary Neural Network models. 
+
+Follow the Guide to use: 
 ### Installation and Execution
 
     git clone https://github.com/Sairam954/B_ONN_SIM.git
@@ -14,7 +30,7 @@ https://arxiv.org/abs/2302.06405
 
 ### Bibtex
 
-Please cite us if you use B_ONN_SIM
+Please cite if you use B_ONN_SIM
 
 ```bash
 @misc{OXBNNISQED2023,
@@ -30,7 +46,7 @@ Please cite us if you use B_ONN_SIM
 
 ```
 
-### Video Tutorial
+### Video Tutorial by Dr. Sairam
 https://www.youtube.com/watch?v=X6yifdEB7xU
 
 ### Accelerator Configuration 
@@ -39,22 +55,21 @@ The accelerator configuration can be provided in main.py file. The configuration
 ``` bash
 ACCELERATOR = [
 {
-    ELEMENT_SIZE: 19, # The supported dot product size of the processing unit, generally equal to number of wavelengths multiplexed in weight bank/activation bank 
-    ELEMENT_COUNT: 19, # Number of parallel dot products that can be performed by one processing unit, generally equal to the number of output waveguides in a processing unit  
-    UNITS_COUNT: 224, # Number of processing unit present in an accelerator
+    ELEMENT_SIZE: 249, # The supported dot product size of the processing unit, generally equal to number of wavelengths multiplexed in weight bank/activation bank 
+    ELEMENT_COUNT: 16, # Number of parallel dot products that can be performed by one processing unit, generally equal to the number of output waveguides in a processing unit  
+    UNITS_COUNT: 150, # Number of processing unit present in an accelerator
     RECONFIG: [], # Useful if the processing unit element size can be reconfigured according to the convolution computation need
-    VDP_TYPE: "AMM", # More information abour vector dot product can be found in our paper ([https://ieeexplore.ieee.org/abstract/document/9852767]
-    NAME: "OXBNN_50", # Name of the accelerator 
-    ACC_TYPE: "ONNA", # Accelerator Type for example, ANALOG, ONNA, LIGHTBULB, and ROBIN. This parameter helps in evaluation of performance metrics based on accelerator
-    PRECISION: 1, # The bit precision supported  by the accelerator, this value along with ***accelerator_required_precision*** determines whether bit-slicing needs to be implemented
-    BITRATE: 50, # The bit rate of the accelerator 
+    VDP_TYPE: "MAW", # More information abour vector dot product can be found in our paper ([https://ieeexplore.ieee.org/abstract/document/9852767]
+    NAME: "SPOGA", # Name of the accelerator 
+    ACC_TYPE: "SPOGA_1", # Accelerator Type for example, ANALOG etc. This parameter helps in evaluation of performance metrics based on accelerator
+    PRECISION: 8, # The bit precision supported  by the accelerator, this value along with ***accelerator_required_precision*** determines whether bit-slicing needs to be implemented
+    BITRATE: 1, # The bit rate of the accelerator 
 }
 ]
 ```
-### Optical XNOR-Bitcount Based Accelerator
-The below image shows OXBNN accelerator processing unit.
-![image](https://user-images.githubusercontent.com/23030293/215595337-4279ec37-7486-4e54-8b04-b7e31fa5dce5.png)
-
+### SPOGA Accelerator
+The below image shows SPOGA accelerator processing unit.
+![The SPOGA Architecture](/assets/spoga_architecture.png "The SPOGA Architecture")
 
 ### Binary_ONN_Simulator Project Structure 
 ``` bash
@@ -67,16 +82,11 @@ The below image shows OXBNN accelerator processing unit.
 │
 | *Script to generate model files ->(https://github.com/Sairam954/CNN_Model_Layer_Information_Generator)*
 ├───CNNModels - *Folder contains various CNN models available for performing simulations. 
-│   │   DenseNet121.csv
 │   │   GoogLeNet.csv
-│   │   Inception_V3.csv
 │   │   MobileNet_V2.csv
-│   │   ResNet18.csv
 │   │   ResNet50.csv
 │   │   ShuffleNet_V2.csv
-│   │   VGG-small.csv
 │   │   VGG16.csv
-│   │   VGG19.csv
 │   │
 │   └───Sample
 │           ResNet50.csv
@@ -130,47 +140,19 @@ The below image shows OXBNN accelerator processing unit.
 │ 
 │
 ├───Plots - *Folder containing the plots produced by visualization.py*
-│   ├───ISQED
 │   │       FPS_(Log_Scale).png
 │   │
 │   └───Sample
 ├───Result
 │   └───ISQED - *Simulation Result of various Binary Neural Network Accelerator*
-│           LIGHTBULB_All.csv
-│           OXBNN_50_ALL.csv
-│           OXBNN_5_ALL.csv
-│           ROBIN_EO_All.csv
-│           ROBIN_PO_All.csv
-│           Vis_Test.csv
 
 ```
 
 ### Simulation Result CSV:
 After the simulations are completed, the results are stored in the form of a csv file containing information as shown below :
 
-![image](https://user-images.githubusercontent.com/23030293/215599495-6df0e14b-3bb4-4bd0-903d-8f9a3c619699.png)
-
 The performance metrics are calculated by using PeformanceMetrics/metrics.py, currently it provides the above values. Users can change the file to reflect their accelerator components energy and power parameters.  
 
 ### Evaluation Visualization:
 The visualization.py can take the generated simulation csv and plot barplot for the results. It also prints useful information in the console about the top two accelerators. 
-![image](https://user-images.githubusercontent.com/23030293/215608379-2d0a6222-b4d0-4891-a08e-9257256aa0a4.png)
-
-Simulation Results Analysis: 
-```bash
-The accelerator OXBNN_50 achieves 4.158922762163461x times better fps than LIGHTBULB
-The accelerator OXBNN_50 achieves 8.384277528829282x times better fps than ROBIN_PO
-The accelerator OXBNN_50 achieves 2.547075858401049x times better fps than OXBNN_5
-The accelerator OXBNN_50 achieves 1.0x times better fps than OXBNN_50
-Details of second best accelerator
-The accelerator OXBNN_5 achieves 1.632822496607645x times better fps than LIGHTBULB
-The accelerator OXBNN_5 achieves 3.29172666812232x times better fps than ROBIN_PO
-The accelerator OXBNN_5 achieves 1.0x times better fps than OXBNN_5
-
-```
-
-
-
-
-
-
+![image](/Plots/FPS_(Log_Scale).png "FPS_(Log_Scale)")
