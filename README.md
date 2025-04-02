@@ -149,7 +149,7 @@ The below image shows SPOGA accelerator processing unit.
 ```
 
 ### Simulation Result CSV:
-After the simulations are completed, the results are stored in the form of a csv file containing information as shown below :
+After the simulations are completed, the results are stored in the results dir
 
 The performance metrics are calculated by using PeformanceMetrics/metrics.py, currently it provides the above values. Users can change the file to reflect their accelerator components energy and power parameters.  
 
